@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Depends, status, Path, HTTPException
 from sqlalchemy.orm import Session, joinedload
 import model
+from sqlalchemy import or_
 from database import engine
 from model import User, Category, Products, Orders
 from typing import Annotated, Literal
@@ -39,16 +40,13 @@ async def getAll(db:dbDependency):
 
 @app.get('/getAllActiveCustomers/')
 async def getAllActiveCustomers(db:dbDependency):
-    list = db.query(User).order_by(User.firstname).all()
-    cust = []
-    for a in list:
-        if a.status == True:
-            cust.append({'Surname':a.lastname, 'Middle Name': a.middle, 'First Name': a.firstname, 'Gender': a.gender, 'Email Address': a.email, 'Phone Number': a.phone, 'status': a.status})
-    return cust
+    list = db.query(User).order_by(User.firstname).filter(User.status == True).all()
+    return list  
 
 @app.get('/getAllDeletedCustomers/')
 async def getAllDeletedCustomers(db:dbDependency):
-    list = db.query(User).order_by(User.firstname).all()
+    list = db.query(User).order_by(User.firstname).filter(or_(User.status == False, User.status.is_(None))
+    ).all()
     cust = []
     for a in list:
         if a.status == False or a.status == None:
@@ -124,4 +122,21 @@ async def getAllProducts(db:dbDependency):
         print(product)
         allProducts.append({'Product Name':product.name, 'Product Description':product.desc, 'Product Price': product.price, 'Product Quantity': product.stock, 'Product Category':product.category.name})
     return allProducts
+    
+# This is to count the number of products in each category
+@app.get("/ProductsPerCategory", status_code=status.HTTP_200_OK)
+async def ProductsPerCategory(db:dbDependency):
+    products = db.query(Products).order_by(Products.name).options().all()
+    electronicCount = 0
+    clothingCount = 0
+    foodstuffCount = 0
+    for product in products:
+        if product.cat_id == 1:
+            electronicCount += 1
+        if product.cat_id == 2:
+            clothingCount += 1
+        if product.cat_id == 3:
+            foodstuffCount += 1
+    Products_Per_Category = {"electronics":electronicCount, "clothing":clothingCount, "foodstuff":foodstuffCount}  
+    return Products_Per_Category
     
