@@ -1,0 +1,74 @@
+{
+  "users": {
+    "sam": 279845,
+    "joe": 189294,
+    "paul": 189071,
+    "carl": 201990
+  },
+  "book1": [
+    {
+      "id": 1,
+      "title": "Attitude is everything",
+      "author": "Brian Tracy",
+      "description": "This book talks about the importance of positive attitude in the community, place of work and in the family",
+      "rating": 5,
+      "owner": "sam"
+    },
+    {
+      "id": 2,
+      "title": "Attitude is everything",
+      "author": "Brian Tracy",
+      "description": "This book talks about the importance of positive attitude in the community, place of work and in the family",
+      "rating": 1,
+      "owner": "joe"
+    },
+    {
+      "id": 3,
+      "title": "Attitude is everything",
+      "author": "Brian Tracy",
+      "description": "This book talks about the importance of positive attitude in the community, place of work and in the family",
+      "rating": 5,
+      "owner": "sam"
+    },
+    {
+      "id": 4,
+      "title": "Attitude is everything",
+      "author": "Brian Tracy",
+      "description": "This book talks about the importance of positive attitude in the community, place of work and in the family",
+      "rating": 3,
+      "owner": "joe"
+    },
+    {
+      "id": 5,
+      "title": "Attitude is everything",
+      "author": "Brian Tracy",
+      "description": "This book talks about the importance of positive attitude in the community, place of work and in the family",
+      "rating": 2,
+      "owner": "joe"
+    },
+    {
+      "id": 6,
+      "title": "The way of a superior man",
+      "author": "David Deida",
+      "description": "This talks about mastering the art of a complete man",
+      "rating": 5,
+      "owner": "carl"
+    },
+    {
+      "id": 7,
+      "title": "There was a country",
+      "author": "Chinua Achebe",
+      "description": "This book talks about the country, Biafra. It's inception and downfall",
+      "rating": 4,
+      "owner": "paul"
+    },
+    {
+      "id": 8,
+      "title": "Working with emotional intelligence",
+      "author": "Daniel Goleman",
+      "description": "This book emotional intelligence",
+      "rating": 4,
+      "owner": "paul"
+    }
+  ]
+}
