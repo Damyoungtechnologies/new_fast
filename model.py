@@ -11,7 +11,7 @@ class User(Base):
     email = Column(String, unique=True)
     phone = Column(String)
     status = Column(Boolean, default=True)
-
+    Orders = relationship("Orders", back_populates="user")
 class Category(Base):
     __tablename__ = "category"
     id = Column(Integer, primary_key=True, index=True)
@@ -27,10 +27,12 @@ class Products(Base):
     stock = Column(Integer)
     
     category = relationship("Category", back_populates="products")
+    orders = relationship("Orders", back_populates="products")
 class Orders(Base):
     __tablename__ = "orders"
     id = Column(Integer, primary_key=True, index=True)
     quantity = Column(String)
     product_id = Column(Integer, ForeignKey("products.id"))
     customer_id = Column(Integer, ForeignKey("users.id"))
-    
+    user = relationship("User", back_populates="orders")
+    product = relationship("Products", back_populates="orders")

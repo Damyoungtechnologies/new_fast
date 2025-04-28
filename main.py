@@ -17,7 +17,7 @@ def get_db():
         yield db  
     finally:  
         db.close() 
-
+# This is the customer/use endpoint
 class Customer(BaseModel):
     lastname: str
     firstname: str
@@ -99,30 +99,7 @@ async def createCategory(db:dbDependency, cat:CategoryModel):
     db.add(newCategory)
     db.commit()
 
-# The next is the product section
-class Product(BaseModel):
-    name: str = Field(..., min_length=3, max_length=20)
-    desc: str | None = Field(..., min_length=3, max_length=50)
-    cat_id: int | None = Field(..., gt=0)
-    price: float = Field(..., gt=0)
-    stock: int = Field(..., gt=0)
 
-@app.post("/createProduct", status_code=status.HTTP_201_CREATED)
-async def createProduct(db:dbDependency, prod:Product):
-    newProduct = Products(**prod.dict())
-    db.add(newProduct)
-    db.commit()
-    return "Product Created Successfully"
-
-@app.get("/getAllProducts", status_code=status.HTTP_200_OK)
-async def getAllProducts(db:dbDependency):
-    products = db.query(Products).order_by(Products.name).options(joinedload(Products.category)).all()
-    allProducts = []
-    for product in products:
-        print(product)
-        allProducts.append({'Product Name':product.name, 'Product Description':product.desc, 'Product Price': product.price, 'Product Quantity': product.stock, 'Product Category':product.category.name})
-    return allProducts
-    
 # This is to count the number of products in each category
 @app.get("/ProductsPerCategory", status_code=status.HTTP_200_OK)
 async def ProductsPerCategory(db:dbDependency):
@@ -139,4 +116,49 @@ async def ProductsPerCategory(db:dbDependency):
             foodstuffCount += 1
     Products_Per_Category = {"electronics":electronicCount, "clothing":clothingCount, "foodstuff":foodstuffCount}  
     return Products_Per_Category
-    
+ 
+#  This is the product endpoint
+class Product(BaseModel):
+    name: str = Field(..., min_length=3, max_length=20)
+    desc: str | None = Field(..., min_length=3, max_length=50)
+    cat_id: int | None = Field(..., gt=0)
+    price: float = Field(..., gt=0)
+    stock: int = Field(..., gt=0)
+
+
+@app.post("/createProduct", status_code=status.HTTP_201_CREATED)
+async def createProduct(db:dbDependency, prod:Product):
+    newProduct = Products(**prod.dict())
+    db.add(newProduct)
+    db.commit()
+    return "Product Created Successfully"
+   
+@app.get("/getAllProducts", status_code=status.HTTP_200_OK)
+async def getAllProducts(db:dbDependency):
+    products = db.query(Products).order_by(Products.name).options(joinedload(Products.category)).all()
+    allProducts = []
+    for product in products:
+        print(product)
+        allProducts.append({'Product Name':product.name, 'Product Description':product.desc, 'Product Price': product.price, 'Product Quantity': product.stock, 'Product Category':product.category.name})
+    return allProducts
+
+@app.put("/updateProduct/{product_id}", status_code=status.HTTP_201_CREATED)
+async def updateProduct(db:dbDependency, prod:Product, product_id:int=Path(..., gt=0)):
+    product = db.query(Products).filter(Products.id==product_id).first()
+    if product is None:
+        raise HTTPException(status_code=404, detail="Product Not Found")
+    product.name = prod.name
+    product.desc = prod.desc
+    product.cat_id = prod.cat_id
+    product.price = prod.price
+    product.stock = prod.stock
+    db.add(product)
+    db.commit()
+
+    return "Product Updated Successfully"
+
+# This is the order endpoint
+class Order(BaseModel):
+    quantity: str | None = Field(..., min_length=1, max_length=20)
+    product_id: int | None = Field(..., gt=0)
+    customer_id: int | None = Field(..., gt=0)
