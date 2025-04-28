@@ -158,8 +158,12 @@ async def updateProduct(db:dbDependency, prod:Product, product_id:int=Path(..., 
     return "Product Updated Successfully"
 
 # This is the order endpoint
-class Order(BaseModel):
+class Order(BaseModel,Product, User):
     quantity: str | None = Field(..., min_length=1, max_length=20)
     product_id: int | None = Field(..., gt=0)
-    customer_id: int | None = Field(..., gt=0)
     
+@app.post("createOrders/", status_code=status.HTTP_201_CREATED)
+async def createOrders(db: dbDependency, order:Order):
+    myOrders = Orders(**order.dict())
+    db.add(myOrders)
+    db.commit()
