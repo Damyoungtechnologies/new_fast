@@ -162,3 +162,4 @@ class Order(BaseModel):
     quantity: str | None = Field(..., min_length=1, max_length=20)
     product_id: int | None = Field(..., gt=0)
     customer_id: int | None = Field(..., gt=0)
+    
